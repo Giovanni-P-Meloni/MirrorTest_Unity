@@ -1,0 +1,35 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Mirror;
+
+public class MyNetMngr : NetworkManager
+{
+    [Space]
+    [Header("Additional")]
+    public TurnMngr turnMngr;
+    public UIMngr uimngr;
+
+    private int playersInServer;
+
+    public override void Start()
+    {
+        base.Start();
+        playersInServer = 0;
+    }
+
+    public override void OnServerAddPlayer(NetworkConnection conn, AddPlayerMessage extraMessage)
+    {
+        base.OnServerAddPlayer(conn, extraMessage);
+        playersInServer++;//aumenta o numero de jogadores conectados
+        turnMngr.AddPlayer(conn.playerController.gameObject);//passa a referencia do jogador para o TurnManager
+        conn.playerController.gameObject.GetComponent<PlayerBHV>().playerID = playersInServer;//Seta o ID do player
+        uimngr.pla = conn.playerController.gameObject.GetComponent<PlayerBHV>();
+    }
+
+    public override void OnServerRemovePlayer(NetworkConnection conn, NetworkIdentity player)
+    {
+        base.OnServerRemovePlayer(conn, player);
+        playersInServer--;
+    }
+}
