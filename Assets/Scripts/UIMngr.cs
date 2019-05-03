@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UIMngr : MonoBehaviour
 {
-    public PlayerBHV pla;
+    public PlayerBHV pla = null;
     private TextMesh text;
 
     private void Start()
@@ -16,7 +16,9 @@ public class UIMngr : MonoBehaviour
     private void Update()
     {
         if (!pla) Debug.Log("Player is null");
-        else 
-            text.text = "It is Player " + (pla.currentTurn + 1).ToString() + " Turn";
+        else{
+            text.text = "It is Player " + (pla.currentTurn + 1) + " Turn";
+            Debug.Log("UI updated");
+        }
     }
 }

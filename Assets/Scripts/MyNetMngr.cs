@@ -8,7 +8,6 @@ public class MyNetMngr : NetworkManager
     [Space]
     [Header("Additional")]
     public TurnMngr turnMngr;
-    public UIMngr uimngr;
 
     private int playersInServer;
 
@@ -22,14 +21,14 @@ public class MyNetMngr : NetworkManager
     {
         base.OnServerAddPlayer(conn, extraMessage);
         playersInServer++;//aumenta o numero de jogadores conectados
-        turnMngr.AddPlayer(conn.playerController.gameObject);//passa a referencia do jogador para o TurnManager
+        turnMngr.AddPlayer(conn.playerController.gameObject.GetComponent<PlayerBHV>());//passa a referencia do jogador para o TurnManager
         conn.playerController.gameObject.GetComponent<PlayerBHV>().playerID = playersInServer;//Seta o ID do player
-        uimngr.pla = conn.playerController.gameObject.GetComponent<PlayerBHV>();
     }
 
     public override void OnServerRemovePlayer(NetworkConnection conn, NetworkIdentity player)
     {
         base.OnServerRemovePlayer(conn, player);
         playersInServer--;
+        turnMngr.RemovePlayer(conn.playerController.gameObject.GetComponent<PlayerBHV>());
     }
 }

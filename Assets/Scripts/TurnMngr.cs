@@ -3,73 +3,66 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void TurnFinishedDelegate(PlayerBHV player);
+
 public class TurnMngr : NetworkBehaviour
 {
     [SerializeField]
-    private GameObject[] playersOnServer;
+    private List<PlayerBHV> playersOnServer;
 
     public bool waiting;
     private TextMesh text;
-    private int plyr_nbr;
+    private bool playerIsActing;
 
     [SyncVar]
     public int currentTurn;
 
-    void OnChangeTurn(int newTurn)
-    {
-        foreach (GameObject GO in playersOnServer)
-        {
-            GO.GetComponent<PlayerBHV>().currentTurn = newTurn;
-        }
-    }
 
     private void Start()
     {
         text = transform.GetComponent<TextMesh>();
-        playersOnServer = new GameObject[2];
-        plyr_nbr = 0;
+        playersOnServer = new List<PlayerBHV>();
         currentTurn = 0;
-        
-
-        Invoke("ChangingTurns", 3);
     }
     
-    /*[ClientCallback]
-    private void Update()
+    public void AddPlayer(PlayerBHV player)
     {
-        text.text = "It is Player " + (currentTurn + 1).ToString() + " Turn";
-    }
-    */
-    public void AddPlayer(GameObject playerGO)
-    {
-        playersOnServer[plyr_nbr] = playerGO;
-        plyr_nbr++;
-        
+        playersOnServer.Add(player);
+        if(playersOnServer.Count > 0)
+            TurnWorks();
     }
 
-    private void ChangingTurns()
-    {
-        if (currentTurn == -1) return;
- 
-        TurnWorks(); 
+    public void RemovePlayer(PlayerBHV player){
+        if(currentTurn >= playersOnServer.IndexOf(player))
+            currentTurn--;
+        playersOnServer.Remove(player);
     }
 
     void TurnWorks()
     {
+        foreach(PlayerBHV player in playersOnServer){
+            player.RpcOnChangeTurn(currentTurn);
+        }
         print(playersOnServer[currentTurn]);
-        if (!playersOnServer[currentTurn]) return;//nao permite null
-        playersOnServer[currentTurn].GetComponent<PlayerBHV>().RpcChangeMyTurn();
-        StartCoroutine(WaitForTurnEnd());       
-        
+        playersOnServer[currentTurn].RpcChangeMyTurn(EndCurrentTurn);
+        StartCoroutine(WaitForTurnEnd());
+    }
+
+    public void EndCurrentTurn(PlayerBHV player){
+        if(player.isMyTurn){
+            playerIsActing = false;
+            playersOnServer[currentTurn].RpcChangeMyTurn(null);
+            currentTurn = ((currentTurn + 1) % (playersOnServer.Count));
+            TurnWorks();
+        }
     }
 
     IEnumerator WaitForTurnEnd()
     {
-        
-        yield return new WaitForSeconds(5);
-        playersOnServer[currentTurn].GetComponent<PlayerBHV>().RpcChangeMyTurn();
-        currentTurn = ((currentTurn + 1) % (plyr_nbr));
-        ChangingTurns();
+        if(playerIsActing){
+            yield return new WaitForSeconds(5);
+            EndCurrentTurn(playersOnServer[currentTurn]);
+        }
     }
 
 }
