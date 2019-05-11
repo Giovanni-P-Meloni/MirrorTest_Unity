@@ -14,7 +14,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Mirror/Examples/Basic/Scenes/Example.unity
     guid: 8fe741b01c3bb4a21a2eaccdcc526260
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 520c8a675956fc2448259df2d9001204
+  - enabled: 1
+    path: Assets/Scenes/Lobby.unity
+    guid: 29c6bb5a6cf2d9543bce316f509d936a
+  - enabled: 1
+    path: Assets/Scenes/OnlineScene.unity
+    guid: 2fa2ed056f369bc4a8499fa8c6e2daae
   m_configObjects: {}

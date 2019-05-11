@@ -5,18 +5,29 @@ using Mirror;
 
 public class PlayerBHV : NetworkBehaviour
 {
-    [SyncVar]
-    public int playerID;
+    public GameObject _myUI; 
     private TextMesh text;
+    public float speed = 1.0f;
+    
+
+    [Space]
+    [Header("Network properties")]
     [SyncVar]
     public bool isMyTurn = false;
-    public float speed = 1.0f;
+    [SyncVar]
+    public int playerID;
     public int currentTurn;
-    
+
     private void Start()
     {
         text = transform.GetComponent<TextMesh>();
         text.text = "Player " + playerID.ToString();
+        Initialize();
+    }
+    
+    private void Initialize()
+    {
+        Instantiate(_myUI, transform);
     }
 
     private void Update()
