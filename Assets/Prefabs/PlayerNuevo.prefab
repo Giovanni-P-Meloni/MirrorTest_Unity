@@ -62,3 +62,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   canvas: {fileID: 7655051411823796789, guid: 46759909e8df2424295262d1c761e267, type: 3}
+  battler: {fileID: 2432361001476206544, guid: 1ebe88a8f1cf93d46ab4b208b6c2b053, type: 3}

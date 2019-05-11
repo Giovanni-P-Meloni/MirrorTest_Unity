@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class TurnManager : MonoBehaviour
+public class TurnManager : NetworkBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -28,5 +28,13 @@ public class TurnManager : MonoBehaviour
     {
         Debug.Log("Command2");
         FindObjectOfType<NetworkAnimator>().SetTrigger("Pula");//pq so tem um
+    }
+
+    public void SpawnObj(GameObject obj, PlayerNetBHV pNet)
+    {
+        GameObject obj2 = Instantiate(obj);
+        //battlers.Add(obj2);
+        pNet.battlers.Add(obj2);
+        NetworkServer.Spawn(obj2);
     }
 }
